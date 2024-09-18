@@ -5,12 +5,12 @@ from os.path import join
 pygame.init()
 
 #Initialize Game Window
-WIDTH, HEIGHT = 600, 600
+WIDTH, HEIGHT = 945, 600
 display_surface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Catch The Clown")
 
 
-#Start game loop
+#Main game loop
 running = True
 while running:
     for event in pygame.event.get():
@@ -22,5 +22,5 @@ while running:
 
 
 
-#End game loop
+#End the game
 pygame.quit()
