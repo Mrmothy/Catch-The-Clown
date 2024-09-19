@@ -15,7 +15,7 @@ clock = pygame.time.Clock()
 
 #Set Game Values
 PLAYER_STARTING_LIVES = 5
-CLOWN_STARTING_VELOCITY = 3 
+CLOWN_STARTING_VELOCITY = 5 
 CLOWN_ACCERLATION = .5
 
 score = 0 
@@ -96,7 +96,7 @@ while running:
                 #move the clown in a new direction
                 previous_dx = clown_dx
                 previous_dy = clown_dy
-                while previous_dx == clown_dx and previous_dy == clown_dy:
+                while (previous_dx == clown_dx and previous_dy == clown_dy):
                     clown_dx = random.choice([-1, 1])
                     clown_dy = random.choice([-1, 1])
             #Missed the clown
@@ -113,6 +113,40 @@ while running:
         clown_dx = -1 * clown_dx
     if clown_image_rect.top <= 0 or clown_image_rect.bottom >= HEIGHT:
         clown_dy = -1 * clown_dy
+
+    #Update the HUD
+    score_text = font.render(f"Score: {score}", True, YELLOW)
+    lives_text = font.render(f"Lives: {player_lives}", True, YELLOW)
+
+    #Check to see if gameover
+    if player_lives == 0:
+        display_surface.blit(game_over_text, game_over_text_rect)
+        display_surface.blit(continue_text, continue_text_rect)
+        pygame.display.update()
+
+        #pause game until player clicks
+        pygame.mixer.music.stop()
+        paused = True
+        while paused:
+            for event in pygame.event.get():
+                #The player wants to play again
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    score = 0
+                    player_lives = PLAYER_STARTING_LIVES
+
+                    clown_image_rect.center = (WIDTH / 2, HEIGHT / 2)
+                    clown_velocity = CLOWN_STARTING_VELOCITY
+                    clown_dx = random.choice([-1, 1])
+                    clown_dy = random.choice([-1, 1])
+
+                    pygame.mixer.music.play(-1, 0.0)
+
+                    paused = False
+
+                if event.type == pygame.QUIT:
+                    paused = False
+                    running = False
+
 
     #Blit Background
     display_surface.blit(background_image, background_image_rect)
