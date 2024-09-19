@@ -63,7 +63,7 @@ miss_sound = pygame.mixer.Sound(join("Assets", "miss_sound.wav"))
 miss_sound.set_volume(.25)
 background_music = join("Assets", "ctc_background_music.wav")
 pygame.mixer.music.load(background_music)
-pygame.mixer.music.set_volume(.25)
+pygame.mixer.music.set_volume(.5)
 
 #Load Images
 background_image = pygame.image.load(join("Assets", "background.png")).convert_alpha()
@@ -75,12 +75,44 @@ clown_image_rect = clown_image.get_rect()
 clown_image_rect.center = (WIDTH / 2, HEIGHT / 2)
 
 #Main game loop
+pygame.mixer.music.play(-1, 0.0)
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-            
+
+        #A click is made
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x = event.pos[0]
+            mouse_y = event.pos[1]
+
+            # The clown was clicked
+            if clown_image_rect.collidepoint(mouse_x, mouse_y):
+                clicker_sound.play()
+                score += 1
+                clown_velocity += CLOWN_ACCERLATION
+
+                #move the clown in a new direction
+                previous_dx = clown_dx
+                previous_dy = clown_dy
+                while previous_dx == clown_dx and previous_dy == clown_dy:
+                    clown_dx = random.choice([-1, 1])
+                    clown_dy = random.choice([-1, 1])
+            #Missed the clown
+            else:
+                miss_sound.play()
+                player_lives -= 1
+
+    #Move the Clown
+    clown_image_rect.x += clown_dx * clown_velocity
+    clown_image_rect.y += clown_dy * clown_velocity
+
+    #Bounce off the edges of display
+    if clown_image_rect.left <= 0 or clown_image_rect.right >= WIDTH:
+        clown_dx = -1 * clown_dx
+    if clown_image_rect.top <= 0 or clown_image_rect.bottom >= HEIGHT:
+        clown_dy = -1 * clown_dy
 
     #Blit Background
     display_surface.blit(background_image, background_image_rect)
