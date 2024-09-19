@@ -32,7 +32,7 @@ BLUE = (1, 175, 209)
 YELLOW = (248, 231, 28)
 
 #Set Fonts
-font = pygame.font.Font(join("Assets", "Franxurter.ttf"))
+font = pygame.font.Font(join("Assets", "Franxurter.ttf"), 32)
 
 #Set text
 TITLE_TEXT = "Catch The Clown"
@@ -48,19 +48,31 @@ lives_text = font.render(f"Lives: {player_lives}", True, YELLOW)
 lives_text_rect = lives_text.get_rect()
 lives_text_rect.topright = (WIDTH - 50, 50)
 
+game_over_text = font.render("GAMEOVER", True, BLUE, YELLOW)
+game_over_text_rect = game_over_text.get_rect()
+game_over_text_rect.center = (WIDTH / 2, HEIGHT / 2)
+
+continue_text = font.render("Click anywhere to play again", True, YELLOW, BLUE)
+continue_text_rect = continue_text.get_rect()
+continue_text_rect.center = (WIDTH / 2, HEIGHT / 2 + 64)
+
 #Load Sound and Music
 clicker_sound = pygame.mixer.Sound(join("Assets", "click_sound.wav"))
+clicker_sound.set_volume(.25)
 miss_sound = pygame.mixer.Sound(join("Assets", "miss_sound.wav"))
-background_music = pygame.mixer.music.load(join("Assets", "ctc_background_music.wav"))
+miss_sound.set_volume(.25)
+background_music = join("Assets", "ctc_background_music.wav")
+pygame.mixer.music.load(background_music)
+pygame.mixer.music.set_volume(.25)
 
 #Load Images
 background_image = pygame.image.load(join("Assets", "background.png")).convert_alpha()
 background_image_rect = background_image.get_rect()
-background_image_rect.center = (WIDTH, HEIGHT)
+background_image_rect.topleft = (0, 0)
 
 clown_image = pygame.image.load(join("Assets", "clown.png")).convert_alpha()
 clown_image_rect = clown_image.get_rect()
-clown_image_rect.center = (0,0)
+clown_image_rect.center = (WIDTH / 2, HEIGHT / 2)
 
 #Main game loop
 running = True
@@ -70,7 +82,20 @@ while running:
             running = False
             
 
+    #Blit Background
+    display_surface.blit(background_image, background_image_rect)
 
+    #Blit Hud
+    display_surface.blit(title_text, title_text_rect)
+    display_surface.blit(score_text, score_text_rect)
+    display_surface.blit(lives_text, lives_text_rect)
+
+    #Blit Assets
+    display_surface.blit(clown_image, clown_image_rect)
+
+    #Update Display
+    pygame.display.update()
+    clock.tick(FPS)
 
 
 
